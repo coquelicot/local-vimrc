@@ -39,6 +39,7 @@ endfunction
 
 
 augroup LocalVimrc
+    autocmd!
     autocmd BufWritePre *lvimrc call LocalVimrcUpdateSelfDigest()
     autocmd BufWinEnter * call LocalVimrcLoadRcsOnPath(expand('%:p:h'))
 augroup END
