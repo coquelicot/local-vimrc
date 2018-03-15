@@ -10,9 +10,9 @@ Currently, all files (including hidden files) end with "lvimrc" are recognized.
 * ~/lvimrc
 * ~/.lvimrc
 * ~/\_lvimrc
-* ~/my-proj/purpuse-a.lvimrc
-* ~/my-proj/purpuse-b.lvimrc
-* ~/my-proj/.purpuse-c.lvimrc
+* ~/my-proj/purpose-a.lvimrc
+* ~/my-proj/purpose-b.lvimrc
+* ~/my-proj/.purpose-c.lvimrc
 
 ## When will it be loaded
 
