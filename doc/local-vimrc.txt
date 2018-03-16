@@ -1,0 +1,72 @@
+*local-vimrc.txt*  Local Vimrc plug-in
+
+        LocalVimrc  by fcrh (coquelicot1117@gmail.com)
+
+==============================================================================
+Contents                                                           *local-vimrc*
+
+        Introduction ........................ |local-vimrc-introduction|
+        Usage ............................... |local-vimrc-usage|
+        Validation .......................... |local-vimrc-validation|
+
+
+==============================================================================
+Introduction                                          *local-vimrc-introduction*
+
+LocalVimrc is used to provide fine grained vimrc control. Let's say you're
+contributing to multiple projects with different coding convensions (e.g. tab
+width), it's hard to have a single vimrc serving all the requirements.
+
+'modeline' may work in some cases, but it's tedious to add specialized config
+to all files in a project. What you want is per-project or even per-directory
+configuration.
+
+LocalVimrc provide this functionality by loading all qualified vimrc on the
+path to the file while you open it in a buffer. Hence you may put your config
+under project root to have it applied to all the files under the project. You
+may even put another config under a directory to override configs for that
+directory only.
+
+
+==============================================================================
+Usage                                                        *local-vimrc-usage*
+
+To have a local vimrc (lvimrc) for a project, use vim to create/edit a vim
+script name `.lvimrc` under project root.
+>
+        $ vim "$PROJ_ROOT"/.lvimrc
+<
+Upon save, our plugin will automatically compute and append a checksum to your
+lvimrc, which will then make it a valid lvimrc. Check |local-vimrc-validation|
+for further details.
+
+In fact, any file with its name ends with `lvimrc` would be recognized by our
+plugin. Hence you may have mutiple lvimrc under a directory. E.g.
+
+* lvimrc
+* .lvimrc
+* another.lvimrc
+* .another.hidden.lvimrc
+* abcdefglvimrc
+
+
+==============================================================================
+Validation                                              *local-vimrc-validation*
+
+To prevent executing malicious vim script that's NOT written by the user, our
+plugin will try to validate lvimrc before loading its content.
+
+Any valid lvimrc should ends with a line containing the checksum of the file.
+>
+        " local-vimrc-digest: <CHECKSUM>
+<
+The checksum is calculated as the HMAC value of the content with a key locally
+generated. Hence the same script would have different checksums on different
+machine (or user, since it's a per-user key).
+
+To make things easier, the checksum will be updated whenever the user try to
+save a file with qualified file name. As a result, the mechanism should not
+cause any problem for normal use cases.
+
+
+vim:tw=78:et:sts=8:sw=8:ts=8:norl:ft=help
