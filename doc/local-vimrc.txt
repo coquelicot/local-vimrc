@@ -14,7 +14,7 @@ Contents                                                           *local-vimrc*
 Introduction                                          *local-vimrc-introduction*
 
 LocalVimrc is used to provide fine grained vimrc control. Let's say you're
-contributing to multiple projects with different coding convensions (e.g. tab
+contributing to multiple projects with different coding conventions (e.g. tab
 width), it's hard to have a single vimrc serving all the requirements.
 
 'modeline' may work in some cases, but it's tedious to add specialized config
@@ -41,7 +41,7 @@ lvimrc, which will then make it a valid lvimrc. Check |local-vimrc-validation|
 for further details.
 
 In fact, any file with its name ends with `lvimrc` would be recognized by our
-plugin. Hence you may have mutiple lvimrc under a directory. E.g.
+plugin. Hence you may have multiple lvimrc under a directory. E.g.
 
 * lvimrc
 * .lvimrc
