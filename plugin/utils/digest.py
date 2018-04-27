@@ -33,7 +33,7 @@ def read_rc(file=None):
     else:
         with open(file, "r") as fin:
             lines = fin.readlines()
-    
+
     # extract digest from last line
     if len(lines) > 0 and lines[-1].startswith(DIGEST_PREFIX):
         digest = lines.pop()[len(DIGEST_PREFIX):].strip()
@@ -56,7 +56,8 @@ def cmd_verify_rc(file):
 
     digest = calc_digest(read_key(), content)
     if (digest != orgi_digest):
-        sys.stderr.write("Wrong digest: expect `{}' but `{}' get.\n".format(digest, orgi_digest))
+        sys.stderr.write("Wrong digest: expect `{}' but `{}' get.\n".format(
+            digest, orgi_digest))
         sys.exit(-1)
 
 
