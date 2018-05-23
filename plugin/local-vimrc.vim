@@ -55,5 +55,6 @@ augroup LocalVimrc
     autocmd BufRead *lvimrc call LocalVimrcCheckAutoUpdate(0)
     autocmd BufNewFile *lvimrc call LocalVimrcCheckAutoUpdate(1)
     autocmd BufWritePre *lvimrc call LocalVimrcUpdateSelfDigest()
-    autocmd BufWinEnter * call LocalVimrcLoadRcsOnPath(expand('%:p:h'))
+    autocmd BufRead * call LocalVimrcLoadRcsOnPath(expand('%:p:h'))
+    autocmd BufNewFile * call LocalVimrcLoadRcsOnPath(expand('%:p:h'))
 augroup END
