@@ -1,32 +1,34 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 import argparse
 import hashlib
 import hmac
 import os
 import sys
+import typing
 
 KEY_LEN = 32
 KEY_FILE = os.path.expanduser("~/.vim/.local-vimrc-key")
 DIGEST_PREFIX = '" local-vimrc-digest: '
 
 
-def read_key(key_file=KEY_FILE):
+def read_key(key_file: str = KEY_FILE) -> bytes:
 
     # if we don't have such file, generate one
     if not os.path.exists(key_file):
         fd = os.open(key_file, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
         with os.fdopen(fd, "w") as fout:
-            key = os.urandom(KEY_LEN).encode("hex")
+            key = os.urandom(KEY_LEN).hex()
             fout.write(key)
 
     with open(key_file, "r") as fin:
-        key = fin.read().strip().decode("hex")
+        key = bytes.fromhex(fin.read().strip())
         assert len(key) == KEY_LEN
         return key
 
 
-def read_rc(file=None):
+def read_rc(file: typing.Optional[str] = None) -> tuple[str,
+                                                        typing.Optional[str]]:
 
     if file is None:
         lines = sys.stdin.readlines()
@@ -43,31 +45,31 @@ def read_rc(file=None):
     return "".join(lines), digest
 
 
-def calc_digest(key, data):
+def calc_digest(key: bytes, data: bytes) -> str:
     return hmac.new(key, data, hashlib.sha1).hexdigest()
 
 
-def cmd_verify_rc(file):
+def cmd_verify_rc(file: typing.Optional[str]) -> None:
 
     content, orgi_digest = read_rc(file)
     if orgi_digest is None:
         sys.stderr.write("Missing digest.\n")
         sys.exit(-1)
 
-    digest = calc_digest(read_key(), content)
+    digest = calc_digest(read_key(), content.encode())
     if (digest != orgi_digest):
         sys.stderr.write("Wrong digest: expect `{}' but `{}' get.\n".format(
             digest, orgi_digest))
         sys.exit(-1)
 
 
-def cmd_update_rc(file):
+def cmd_update_rc(file: typing.Optional[str]) -> None:
 
     content, _ = read_rc(file)
     if content != "" and content[-1] != "\n":
         content += "\n"
 
-    digest = calc_digest(read_key(), content)
+    digest = calc_digest(read_key(), content.encode())
     content += DIGEST_PREFIX + digest + "\n"
 
     if file:
