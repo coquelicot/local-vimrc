@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 import argparse
 import hashlib
@@ -17,11 +17,11 @@ def read_key(key_file=KEY_FILE):
     if not os.path.exists(key_file):
         fd = os.open(key_file, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
         with os.fdopen(fd, "w") as fout:
-            key = os.urandom(KEY_LEN).encode("hex")
+            key = os.urandom(KEY_LEN).hex()
             fout.write(key)
 
     with open(key_file, "r") as fin:
-        key = fin.read().strip().decode("hex")
+        key = bytes.fromhex(fin.read().strip())
         assert len(key) == KEY_LEN
         return key
 
@@ -54,7 +54,7 @@ def cmd_verify_rc(file):
         sys.stderr.write("Missing digest.\n")
         sys.exit(-1)
 
-    digest = calc_digest(read_key(), content)
+    digest = calc_digest(read_key(), content.encode())
     if (digest != orgi_digest):
         sys.stderr.write("Wrong digest: expect `{}' but `{}' get.\n".format(
             digest, orgi_digest))
@@ -67,7 +67,7 @@ def cmd_update_rc(file):
     if content != "" and content[-1] != "\n":
         content += "\n"
 
-    digest = calc_digest(read_key(), content)
+    digest = calc_digest(read_key(), content.encode())
     content += DIGEST_PREFIX + digest + "\n"
 
     if file:
