@@ -5,13 +5,14 @@ import hashlib
 import hmac
 import os
 import sys
+import typing
 
 KEY_LEN = 32
 KEY_FILE = os.path.expanduser("~/.vim/.local-vimrc-key")
 DIGEST_PREFIX = '" local-vimrc-digest: '
 
 
-def read_key(key_file=KEY_FILE):
+def read_key(key_file: str = KEY_FILE) -> bytes:
 
     # if we don't have such file, generate one
     if not os.path.exists(key_file):
@@ -26,7 +27,8 @@ def read_key(key_file=KEY_FILE):
         return key
 
 
-def read_rc(file=None):
+def read_rc(file: typing.Optional[str] = None) -> tuple[str,
+                                                        typing.Optional[str]]:
 
     if file is None:
         lines = sys.stdin.readlines()
@@ -43,11 +45,11 @@ def read_rc(file=None):
     return "".join(lines), digest
 
 
-def calc_digest(key, data):
+def calc_digest(key: bytes, data: bytes) -> str:
     return hmac.new(key, data, hashlib.sha1).hexdigest()
 
 
-def cmd_verify_rc(file):
+def cmd_verify_rc(file: typing.Optional[str]) -> None:
 
     content, orgi_digest = read_rc(file)
     if orgi_digest is None:
@@ -61,7 +63,7 @@ def cmd_verify_rc(file):
         sys.exit(-1)
 
 
-def cmd_update_rc(file):
+def cmd_update_rc(file: typing.Optional[str]) -> None:
 
     content, _ = read_rc(file)
     if content != "" and content[-1] != "\n":
