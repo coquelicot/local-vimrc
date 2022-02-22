@@ -27,8 +27,7 @@ def read_key(key_file: str = KEY_FILE) -> bytes:
         return key
 
 
-def read_rc(file: typing.Optional[str] = None) -> tuple[str,
-                                                        typing.Optional[str]]:
+def read_rc(file: typing.Optional[str] = None) -> typing.Tuple[str, typing.Optional[str]]:
 
     if file is None:
         lines = sys.stdin.readlines()
