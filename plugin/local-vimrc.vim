@@ -1,5 +1,16 @@
 let s:util_path = fnameescape(expand('<sfile>:p:h') . '/utils/digest.py')
 
+if !exists("g:lvimrc_ignore_dirs")
+    let g:lvimrc_ignore_dirs = []
+endif
+
+function! s:EnsureTrailingSlash(dir)
+    if a:dir =~ '/$'
+        return a:dir
+    endif
+    return a:dir . '/'
+endfunction
+
 function! LocalVimrcUpdateDigest(file)
     call system(s:util_path . ' update ' . fnameescape(a:file))
     return v:shell_error == 0
@@ -8,6 +19,18 @@ endfunction
 function! LocalVimrcVerifyDigest(file)
     call system(s:util_path . ' verify ' . fnameescape(a:file))
     return v:shell_error == 0
+endfunction
+
+function! LocalVimrcShouldIgnoreDir(dir)
+    let dir = s:EnsureTrailingSlash(a:dir)
+    let ignore_dirs = get(b:, "lvimrc_ignore_dirs", g:lvimrc_ignore_dirs)
+    for ignore_dir in ignore_dirs
+        let ignore_prefix = s:EnsureTrailingSlash(ignore_dir)
+        if dir[0:len(ignore_prefix)-1] ==# ignore_prefix
+            return 1
+        endif
+    endfor
+    return 0
 endfunction
 
 function! LocalVimrcLoadRcs(rcs)
@@ -24,12 +47,13 @@ endfunction
 
 function! LocalVimrcLoadRcsOnPath(path)
     let current_path = ''
-    call LocalVimrcLoadRcs(glob('/*lvimrc'))
-    call LocalVimrcLoadRcs(glob('/.*lvimrc'))
-    for dir in split(a:path, '/')
-        let current_path = current_path . '/' . dir
-        call LocalVimrcLoadRcs(glob(current_path . '/*lvimrc'))
-        call LocalVimrcLoadRcs(glob(current_path . '/.*lvimrc'))
+    for dir in [''] + split(a:path, '/')
+        let current_path = current_path . dir . '/'
+        if LocalVimrcShouldIgnoreDir(current_path)
+            break
+        endif
+        call LocalVimrcLoadRcs(glob(current_path . '*lvimrc'))
+        call LocalVimrcLoadRcs(glob(current_path . '.*lvimrc'))
     endfor
 endfunction
 

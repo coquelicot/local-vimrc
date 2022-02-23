@@ -7,6 +7,7 @@ Contents                                                           *local-vimrc*
 
         Introduction ........................ |local-vimrc-introduction|
         Usage ............................... |local-vimrc-usage|
+        Options ............................. |local-vimrc-options|
         Validation .......................... |local-vimrc-validation|
 
 
@@ -48,6 +49,22 @@ plugin. Hence you may have multiple lvimrc under a directory. E.g.
 * another.lvimrc
 * .another.hidden.lvimrc
 * abcdefglvimrc
+
+
+==============================================================================
+Options                                                    *local-vimrc-options*
+
+g:lvimrc_ignore_dirs                                     *g:lvimrc_ignore_dirs*
+                                                         *b:lvimrc_ignore_dirs*
+
+  Type: |List|
+  Default: `[]`
+
+  A |List| of absolute paths indicating directories to ignore in the lvimrc
+  loading process. Both the directories listed and their sub-directories are
+  ignored, so you only need to specify those top level directories.
+
+  This variable can be overridden with variables in each buffer.
 
 
 ==============================================================================
